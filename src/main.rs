@@ -1,53 +1,61 @@
-/* fn bubble_sort(array: &Vec<i32>) {
+fn bubble_sort(array: &mut Vec<i32>) {
     for i in 0..array.len() {
         for j in 0..array.len() - i - 1 {
             if array[j + 1] < array[j] {
-                let tmp = array[j];
-                array[j] = array[j + 1];
-                array[j + 1] = tmp;
+                // let tmp = array[j];
+                // array[j] = array[j + 1];
+                // array[j + 1] = tmp;
+                array.swap(j, j + 1);
             }
         }
     }
-} */
+}
 
-fn merge(l_half: Vec<i32>, r_half: Vec<i32>) -> Vec<i32> {
-    let mut sorted = Vec::new();
-    let mut mut_l_half = l_half;
-    let mut mut_r_half = r_half;
+fn merge(l_arr: &[i32], r_arr: &[i32], sorted: &mut [i32]) {
+    let (mut left, mut right, mut i) = (0, 0, 0);
 
-    println!("{} {}", mut_l_half.len(), mut_r_half.len());
-
-    while mut_l_half.len() > 0 && mut_r_half.len() > 0 {
-        mut_l_half.split_off(1);
-        mut_r_half.split_off(1);
-        if mut_l_half[0] < mut_r_half[0] {
-            sorted.push(mut_l_half[0]);
+    while left < l_arr.len() && right < r_arr.len() {
+        if l_arr[left] <= r_arr[right] {
+            sorted[i] = l_arr[left];
+            i += 1;
+            left += 1;
         } else {
-            sorted.push(mut_r_half[0]);
+            sorted[i] = r_arr[right];
+            i += 1;
+            right += 1;
         }
     }
 
-    sorted
-}
-
-fn merge_sort(array: &[i32]) -> Vec<i32> {
-    if array.len() < 2 {
-        let mut v = Vec::new();
-        v.extend_from_slice(array);
-        return v;
+    if left < l_arr.len() {
+        sorted[i..].copy_from_slice(&l_arr[left..]);
     }
 
-    let middle = array.len() / 2;
-    let left = &array[..middle - 1];
-    let right = &array[middle..];
+    if right < r_arr.len() {
+        sorted[i..].copy_from_slice(&r_arr[right..]);
+    }
+}
 
-    merge(merge_sort(left), merge_sort(right))
+fn merge_sort(array: &mut [i32]) {
+    let length = array.len();
+    let middle = length / 2;
+    if length < 2 {
+        return;
+    }
+
+    let mut sorted = array.to_vec();
+
+    merge_sort(&mut array[..middle]);
+    merge_sort(&mut array[middle..]);
+
+    merge(&array[..middle], &array[middle..], &mut sorted[..]);
+
+    array.copy_from_slice(&sorted);
 }
 
 fn main() {
-    let array = vec![5, 4, 3, 2, 1];
-    //bubble_sort(&mut array);
-    //println!("{:?}", array);
-    let sorted = merge_sort(&array[..]);
-    println!("{:?}", sorted)
+    let mut array = vec![5, 4, 3, 2, 1];
+    merge_sort(&mut array);
+    println!("{:?}", array);
+    //let sorted = merge_sort(&array[..]);
+    //println!("{:?}", sorted)
 }
