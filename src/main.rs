@@ -12,6 +12,7 @@ fn bubble_sort(array: &mut Vec<i32>) {
 }
 
 fn merge(l_arr: &[i32], r_arr: &[i32], sorted: &mut [i32]) {
+    // Current loop position in left half, right half, and sorted vector
     let (mut left, mut right, mut i) = (0, 0, 0);
 
     while left < l_arr.len() && right < r_arr.len() {
@@ -27,10 +28,12 @@ fn merge(l_arr: &[i32], r_arr: &[i32], sorted: &mut [i32]) {
     }
 
     if left < l_arr.len() {
+        // If there is anything left in the left half append it after sorted members
         sorted[i..].copy_from_slice(&l_arr[left..]);
     }
 
     if right < r_arr.len() {
+        // If there is anything left in the right half append it after sorted members
         sorted[i..].copy_from_slice(&r_arr[right..]);
     }
 }
@@ -39,7 +42,7 @@ fn merge_sort(array: &mut [i32]) {
     let length = array.len();
     let middle = length / 2;
     if length < 2 {
-        return;
+        return; // No need to sort vectors with one element
     }
 
     let mut sorted = array.to_vec();
@@ -49,12 +52,13 @@ fn merge_sort(array: &mut [i32]) {
 
     merge(&array[..middle], &array[middle..], &mut sorted[..]);
 
-    array.copy_from_slice(&sorted);
+    array.copy_from_slice(&sorted); // Copy the sorted result into original vector
 }
 
 fn main() {
     let mut array = vec![5, 4, 3, 2, 1];
     merge_sort(&mut array);
+    bubble_sort(&mut array);
     println!("{:?}", array);
     //let sorted = merge_sort(&array[..]);
     //println!("{:?}", sorted)
